@@ -1,0 +1,31 @@
+Create View: The view PrinterSupplierView is created to include all columns of the Supplier table for suppliers with product names containing "Printer".
+Define Roles: The roles PrinterProductEmp, PrinterProductMgr, and StoreMgr are defined.
+Grant Privileges to PrinterProductEmp: The PrinterProductEmp role is granted retrieval access to all columns except the supplier discount.
+Grant Privileges to PrinterProductMgr: The PrinterProductMgr role is granted retrieval and modification access to all columns except the supplier discount.
+Grant Privileges to StoreMgr: The StoreMgr role is granted retrieval access for all columns, as well as insert, delete, and modification permissions for the supplier discount.
+ 
+-- Step 1: Create the view of the Supplier table for suppliers of printer products
+CREATE VIEW PrinterSupplierView AS
+SELECT *
+FROM Supplier
+WHERE ProdName LIKE '%Printer%';
+
+-- Step 2: Define roles
+CREATE ROLE PrinterProductEmp;
+CREATE ROLE PrinterProductMgr;
+CREATE ROLE StoreMgr;
+
+-- Step 3: Grant privileges to PrinterProductEmp: retrieval of all columns except supplier discount
+GRANT SELECT (SupplierID, SupplierName, SupplierAddress, SupplierPhone, SupplierEmail, ProdName)
+ON PrinterSupplierView
+TO PrinterProductEmp;
+
+-- Step 4: Grant privileges to PrinterProductMgr: retrieval and modification of all columns except supplier discount
+GRANT SELECT, UPDATE (SupplierID, SupplierName, SupplierAddress, SupplierPhone, SupplierEmail, ProdName)
+ON PrinterSupplierView
+TO PrinterProductMgr;
+
+-- Step 5: Grant privileges to StoreMgr: retrieval for all columns, insert, delete, and modification of supplier discount
+GRANT SELECT, INSERT, UPDATE (SupplierDiscount), DELETE
+ON PrinterSupplierView
+TO StoreMgr;
